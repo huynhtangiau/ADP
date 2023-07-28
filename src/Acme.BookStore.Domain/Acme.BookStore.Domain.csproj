@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Volo.Abp.Emailing" Version="7.3.0" />
     <PackageReference Include="Volo.Abp.Identity.Domain" Version="7.3.0" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="7.3.0" />

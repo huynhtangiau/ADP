@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Acme.BookStore.Authors;
 using Acme.BookStore.Books;
+using Humanizer;
+using Volo.Abp;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
@@ -24,8 +26,7 @@ public class BookStoreDataSeederContributor
         _authorRepository = authorRepository;
         _authorManager = authorManager;
     }
-
-    public async Task SeedAsync(DataSeedContext context)
+    public async Task BookSampleSeedingAsync()
     {
         if (await _bookRepository.GetCountAsync() > 0)
         {
@@ -71,5 +72,33 @@ public class BookStoreDataSeederContributor
             },
             autoSave: true
         );
+    }
+    public async Task Seeding100MBooksAsync()
+    {
+        const int totalBooks = 10000;
+        if (await _bookRepository.GetCountAsync() > totalBooks)
+        {
+            return;
+        }
+        var author = await _authorRepository.FirstOrDefaultAsync();  
+        for(var i = 0; i< totalBooks; i++)
+        {
+            await _bookRepository.InsertAsync(
+            new Book
+            {
+                AuthorId = author.Id, // SET THE AUTHOR
+                Name = $"Books {(i+1).ToWords()}",
+                Type = BookType.Science,
+                PublishDate = new DateTime(RandomHelper.GetRandom(1995, 2023), RandomHelper.GetRandom(1, 12), RandomHelper.GetRandom(1, 28)),
+                Price = RandomHelper.GetRandom(1, 100)
+            },
+            autoSave: true
+        );
+        }
+    }
+    public async Task SeedAsync(DataSeedContext context)
+    {
+        await BookSampleSeedingAsync();
+        await Seeding100MBooksAsync();
     }
 }
